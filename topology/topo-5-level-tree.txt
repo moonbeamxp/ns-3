@@ -1,0 +1,69 @@
+# Tree Topology
+
+router
+#node	comment	yPos	xPos
+Root	NA	12	16
+Rtr2	NA	8	8
+Rtr3	NA	8	24
+Rtr4	NA	5	4
+Rtr5	NA	5	12
+Rtr6	NA	5	20
+Rtr7	NA	5	28
+Rtr8	NA	3	2
+Rtr9	NA	3	6
+Rtr10	NA	3	10
+Rtr11	NA	3	14
+Rtr12	NA	3	18
+Rtr13	NA	3	22
+Rtr14	NA	3	26
+Rtr15	NA	3	30
+Leaf1	NA	1	1
+Leaf2	NA	1	3
+Leaf3	NA	1	5
+Leaf4	NA	1	7
+Leaf5	NA	1	9
+Leaf6	NA	1	11
+Leaf7	NA	1	13
+Leaf8	NA	1	15
+Leaf9	NA	1	17
+Leaf10	NA	1	19
+Leaf11	NA	1	21
+Leaf12	NA	1	23
+Leaf13	NA	1	25
+Leaf14	NA	1	27
+Leaf15	NA	1	29
+Leaf16	NA	1	31
+
+link
+# srcNode   dstNode     bandwidth   metric    deLay   queue
+Root        Rtr2        100Mbps      1        10ms     1000
+Root        Rtr3        100Mbps      1        10ms     1000
+Rtr2        Rtr4        100Mbps      1        10ms     1000
+Rtr2        Rtr5        100Mbps      1        10ms     1000
+Rtr3        Rtr6        100Mbps      1        10ms     1000
+Rtr3        Rtr7        100Mbps      1        10ms     1000
+Rtr4        Rtr8        100Mbps      1        10ms     1000
+Rtr4        Rtr9        100Mbps      1        10ms     1000
+Rtr5        Rtr10       100Mbps      1        10ms     1000
+Rtr5        Rtr11       100Mbps      1        10ms     1000
+Rtr6        Rtr12       100Mbps      1        10ms     1000
+Rtr6        Rtr13       100Mbps      1        10ms     1000
+Rtr7        Rtr14       100Mbps      1        10ms     1000
+Rtr7        Rtr15       100Mbps      1        10ms     1000
+Rtr8        Leaf1       100Mbps      1        10ms     1000
+Rtr8        Leaf2       100Mbps      1        10ms     1000
+Rtr9        Leaf3       100Mbps      1        10ms     1000
+Rtr9        Leaf4       100Mbps      1        10ms     1000
+Rtr10       Leaf5       100Mbps      1        10ms     1000
+Rtr10       Leaf6       100Mbps      1        10ms     1000
+Rtr11       Leaf7       100Mbps      1        10ms     1000
+Rtr11       Leaf8       100Mbps      1        10ms     1000
+Rtr12       Leaf9       100Mbps      1        10ms     1000
+Rtr12       Leaf10      100Mbps      1        10ms     1000
+Rtr13       Leaf11      100Mbps      1        10ms     1000
+Rtr13       Leaf12      100Mbps      1        10ms     1000
+Rtr14       Leaf13      100Mbps      1        10ms     1000
+Rtr14       Leaf14      100Mbps      1        10ms     1000
+Rtr15       Leaf15      100Mbps      1        10ms     1000
+Rtr15       Leaf16      100Mbps      1        10ms     1000
+

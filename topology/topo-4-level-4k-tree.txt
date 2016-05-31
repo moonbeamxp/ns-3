@@ -1,0 +1,75 @@
+# Tree Topology
+
+router
+#node	comment	yPos	xPos
+Root	NA	12	16
+R1	NA	8	8
+R11	NA	8	8
+R111	NA	8	8
+R112	NA	8	8
+R12	NA	8	8
+R13	NA	8	8
+R131	NA	8	8
+R132	NA	8	8
+R133	NA	8	8
+R134	NA	8	8
+R2	NA	8	24
+R21	NA	8	24
+R211	NA	8	8
+R212	NA	8	8
+R213	NA	8	8
+R22	NA	8	24
+R221	NA	8	8
+R222	NA	8	8
+R223	NA	8	8
+R224	NA	8	8
+R3	NA	5	4
+R31	NA	5	4
+R311	NA	8	8
+R312	NA	8	8
+R313	NA	8	8
+R32	NA	5	4
+R321	NA	8	8
+R322	NA	8	8
+R33	NA	5	4
+R331	NA	8	8
+R332	NA	8	8
+R333	NA	8	8
+R34	NA	5	4
+
+link
+# srcNode   dstNode     bandwidth   metric    deLay   queue
+Root        R1	        1000Mbps     1        10ms     2000
+Root        R2	        1000Mbps     1        10ms     2000
+Root        R3	        1000Mbps     1        10ms     2000
+R1          R11	        100Mbps      1        10ms     200
+R1          R12	        100Mbps      1        10ms     200
+R1          R13	        100Mbps      1        10ms     200
+R2          R21	        100Mbps      1        10ms     200
+R2          R22	        100Mbps      1        10ms     200
+R3          R31	        100Mbps      1        10ms     200
+R3          R32	        100Mbps      1        10ms     200
+R3          R33	        100Mbps      1        10ms     200
+R3          R34	        100Mbps      1        10ms     200
+R11         R111        100Mbps      1        10ms     200
+R11         R112        100Mbps      1        10ms     200
+R13         R131        100Mbps      1        10ms     200
+R13         R132        100Mbps      1        10ms     200
+R13         R133        100Mbps      1        10ms     200
+R13         R134        100Mbps      1        10ms     200
+R21         R211        100Mbps      1        10ms     200
+R21         R212        100Mbps      1        10ms     200
+R21         R213        100Mbps      1        10ms     200
+R22         R221        100Mbps      1        10ms     200
+R22         R222        100Mbps      1        10ms     200
+R22         R223        100Mbps      1        10ms     200
+R22         R224        100Mbps      1        10ms     200
+R31         R311        100Mbps      1        10ms     200
+R31         R312        100Mbps      1        10ms     200
+R31         R313        100Mbps      1        10ms     200
+R32         R321        100Mbps      1        10ms     200
+R32         R322        100Mbps      1        10ms     200
+R33         R331        100Mbps      1        10ms     200
+R33         R332        100Mbps      1        10ms     200
+R33         R333        100Mbps      1        10ms     200
+

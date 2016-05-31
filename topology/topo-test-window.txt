@@ -1,0 +1,20 @@
+router
+#name          city  latitude longitude
+Consumer1	NA	10	10
+Consumer2	NA    	6	10
+Router1		NA	8	12
+Router2		NA	8	14
+Router3		NA	8	16
+Router4		NA	8	18
+Producer1	NA	10	20
+Producer2	NA	6	20
+
+link
+#x		y       	capacity(kbps)  OSPF    Delay   MaxPackets
+Consumer1	Router1		100Mbps		1	10ms	100
+Consumer2	Router1		100Mbps		1	10ms	100
+Router1		Router2		10Mbps		1	10ms	60
+Router2		Router3		100Mbps		1	10ms	100
+Router3		Router4		100Mbps		1	10ms	100
+Router4		Producer1	100Mbps		1	10ms	100
+Router4		Producer2	100Mbps		1	10ms	100

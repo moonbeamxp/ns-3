@@ -1,0 +1,15 @@
+# Tree Topology
+
+router
+#node	comment	yPos	xPos
+Root	NA	12	16
+R1	NA	8	8
+R2	NA	8	24
+R3	NA	5	4
+
+link
+# srcNode   dstNode     bandwidth   metric    deLay   queue
+Root        R1	        1000Mbps     1        10ms     2000
+Root        R2	        1000Mbps     1        10ms     2000
+Root        R3	        1000Mbps     1        10ms     2000
+

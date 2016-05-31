@@ -1,0 +1,37 @@
+# topo-6-node.txt
+
+#   /------\	                                                /------\
+#   | Src1 |<--+                                            +-->| Dst1 |
+#   \------/    \                                          /    \------/
+#            	 \                                        /     
+#                 +-->/------\   "bottleneck"  /------\<-+      
+#                     | Rtr1 |<===============>| Rtr2 |         
+#                 +-->\------/                 \------/<-+      
+#                /                                        \
+#   /------\    /                                          \    /------\
+#   | Src2 |<--+                                            +-->| Dst2 |
+#   \------/                                                    \------/
+
+router
+
+# node  comment     yPos    xPos
+client1   NA        3       3
+client2   NA        1       3
+router1   NA        2       5
+router2   NA        2       7
+router3   NA        2       9
+router4   NA        2       11
+server1   NA        3       13
+server2   NA        1       13
+
+link
+
+# srcNode   dstNode     bandwidth   metric  delay   queue
+client1        router1        100Mbps      1        10ms    100
+client2        router1        100Mbps      1        10ms    100
+router1        router2        10Mbps       1        10ms    60
+router2        router3        100Mbps       1       10ms    100
+router3        router4        100Mbps       1       10ms    100
+server1        router4        100Mbps      1        10ms    100
+server2        router4        100Mbps      1        10ms    100
+

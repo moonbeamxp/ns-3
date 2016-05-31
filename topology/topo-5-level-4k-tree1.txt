@@ -1,0 +1,171 @@
+# Tree Topology
+
+router
+#node	comment	yPos	xPos
+Root	NA	0	0
+R1	NA	0	0
+R11	NA	0	0
+R111	NA	0	0
+R1111	NA	0	0
+R1112	NA	0	0
+R1113	NA	0	0
+R112	NA	0	0
+R1121	NA	0	0
+R1122	NA	0	0
+R1123	NA	0	0
+R1124	NA	0	0
+R113	NA	0	0
+R114	NA	0	0
+R12	NA	0	0
+R13	NA	0	0
+R131	NA	0	0
+R1311	NA	0	0
+R1312	NA	0	0
+R132	NA	0	0
+R1321	NA	0	0
+R133	NA	0	0
+R1331	NA	0	0
+R1332	NA	0	0
+R1333	NA	0	0
+R134	NA	0	0
+R2	NA	0	0
+R21	NA	0	0
+R211	NA	0	0
+R2111	NA	0	0
+R2112	NA	0	0
+R212	NA	0	0
+R213	NA	0	0
+R2131	NA	0	0
+R2132	NA	0	0
+R2133	NA	0	0
+R2134	NA	0	0
+R22	NA	0	0
+R221	NA	0	0
+R222	NA	0	0
+R2221	NA	0	0
+R2222	NA	0	0
+R223	NA	0	0
+R2231	NA	0	0
+R224	NA	0	0
+R2241	NA	0	0
+R2242	NA	0	0
+R2243	NA	0	0
+R23	NA	0	0
+R3	NA	0	0
+R31	NA	0	0
+R311	NA	0	0
+R3111	NA	0	0
+R3112	NA	0	0
+R312	NA	0	0
+R3121	NA	0	0
+R313	NA	0	0
+R3131	NA	0	0
+R3132	NA	0	0
+R3133	NA	0	0
+R3134	NA	0	0
+R32	NA	0	0
+R321	NA	0	0
+R3211	NA	0	0
+R3212	NA	0	0
+R3213	NA	0	0
+R322	NA	0	0
+R3221	NA	0	0
+R3222	NA	0	0
+R3223	NA	0	0
+R3224	NA	0	0
+R33	NA	0	0
+R331	NA	0	0
+R3311	NA	0	0
+R3312	NA	0	0
+R3313	NA	0	0
+R3314	NA	0	0
+R332	NA	0	0
+R3321	NA	0	0
+R3322	NA	0	0
+R333	NA	0	0
+R34	NA	0	0
+
+link
+# srcNode   dstNode     bandwidth   metric    deLay   queue
+Root        R1	        1000Mbps     1        10ms     2000
+Root        R2	        1000Mbps     1        10ms     2000
+Root        R3	        1000Mbps     1        10ms     2000
+R1          R11	        100Mbps      1        10ms     200
+R1          R12	        100Mbps      1        10ms     200
+R1          R13	        100Mbps      1        10ms     200
+R2          R21	        100Mbps      1        10ms     200
+R2          R22	        100Mbps      1        10ms     200
+R2          R23	        100Mbps      1        10ms     200
+R3          R31	        100Mbps      1        10ms     200
+R3          R32	        100Mbps      1        10ms     200
+R3          R33	        100Mbps      1        10ms     200
+R3          R34	        100Mbps      1        10ms     200
+R11         R111        100Mbps      1        10ms     200
+R11         R112        100Mbps      1        10ms     200
+R11         R113        100Mbps      1        10ms     200
+R11         R114        100Mbps      1        10ms     200
+R13         R131        100Mbps      1        10ms     200
+R13         R132        100Mbps      1        10ms     200
+R13         R133        100Mbps      1        10ms     200
+R13         R134        100Mbps      1        10ms     200
+R21         R211        100Mbps      1        10ms     200
+R21         R212        100Mbps      1        10ms     200
+R21         R213        100Mbps      1        10ms     200
+R22         R221        100Mbps      1        10ms     200
+R22         R222        100Mbps      1        10ms     200
+R22         R223        100Mbps      1        10ms     200
+R22         R224        100Mbps      1        10ms     200
+R31         R311        100Mbps      1        10ms     200
+R31         R312        100Mbps      1        10ms     200
+R31         R313        100Mbps      1        10ms     200
+R32         R321        100Mbps      1        10ms     200
+R32         R322        100Mbps      1        10ms     200
+R33         R331        100Mbps      1        10ms     200
+R33         R332        100Mbps      1        10ms     200
+R33         R333        100Mbps      1        10ms     200
+R111        R1111       100Mbps      1        10ms     200
+R111        R1112       100Mbps      1        10ms     200
+R111        R1113       100Mbps      1        10ms     200
+R112        R1121       100Mbps      1        10ms     200
+R112        R1122       100Mbps      1        10ms     200
+R112        R1123       100Mbps      1        10ms     200
+R112        R1124       100Mbps      1        10ms     200
+R131        R1311       100Mbps      1        10ms     200
+R131        R1312       100Mbps      1        10ms     200
+R132        R1321       100Mbps      1        10ms     200
+R133        R1331       100Mbps      1        10ms     200
+R133        R1332       100Mbps      1        10ms     200
+R133        R1333       100Mbps      1        10ms     200
+R211        R2111       100Mbps      1        10ms     200
+R211        R2112       100Mbps      1        10ms     200
+R213        R2131       100Mbps      1        10ms     200
+R213        R2132       100Mbps      1        10ms     200
+R213        R2133       100Mbps      1        10ms     200
+R213        R2134       100Mbps      1        10ms     200
+R222        R2221       100Mbps      1        10ms     200
+R222        R2222       100Mbps      1        10ms     200
+R223        R2231       100Mbps      1        10ms     200
+R224        R2241       100Mbps      1        10ms     200
+R224        R2242       100Mbps      1        10ms     200
+R224        R2243       100Mbps      1        10ms     200
+R311        R3111       100Mbps      1        10ms     200
+R311        R3112       100Mbps      1        10ms     200
+R312        R3121       100Mbps      1        10ms     200
+R313        R3131       100Mbps      1        10ms     200
+R313        R3132       100Mbps      1        10ms     200
+R313        R3133       100Mbps      1        10ms     200
+R313        R3134       100Mbps      1        10ms     200
+R321        R3211       100Mbps      1        10ms     200
+R321        R3212       100Mbps      1        10ms     200
+R321        R3213       100Mbps      1        10ms     200
+R322        R3221       100Mbps      1        10ms     200
+R322        R3222       100Mbps      1        10ms     200
+R322        R3223       100Mbps      1        10ms     200
+R322        R3224       100Mbps      1        10ms     200
+R331        R3311       100Mbps      1        10ms     200
+R331        R3312       100Mbps      1        10ms     200
+R331        R3313       100Mbps      1        10ms     200
+R331        R3314       100Mbps      1        10ms     200
+R332        R3321       100Mbps      1        10ms     200
+R332        R3322       100Mbps      1        10ms     200
+
