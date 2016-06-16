@@ -102,8 +102,9 @@ public:
   virtual inline bool
   Add (Ptr<const Data> data);
 
-  // virtual bool
-  // Remove (Ptr<Interest> header);
+  // zhi add
+  virtual inline bool
+  Remove (const Name& name);
 
   virtual inline void
   Print (std::ostream &os) const;
@@ -120,6 +121,10 @@ public:
   virtual Ptr<Entry>
   Next (Ptr<Entry>);
 
+  // zhi add
+  virtual bool
+  IsFull();
+  
   const typename super::policy_container &
   GetPolicy () const { return super::getPolicy (); }
 
@@ -252,6 +257,22 @@ ContentStoreImpl<Policy>::Add (Ptr<const Data> data)
     return false; // cannot insert entry
 }
 
+// zhi add
+template<class Policy>
+bool
+ContentStoreImpl<Policy>::Remove (const Name& name)
+{
+  typename super::iterator node = this->find_exact (name);
+  
+  if (node == this->end ())
+  {
+    return false;
+  }
+
+  super::erase(node);
+  return true;
+}
+
 template<class Policy>
 void
 ContentStoreImpl<Policy>::Print (std::ostream &os) const
@@ -331,6 +352,13 @@ ContentStoreImpl<Policy>::Next (Ptr<Entry> from)
     return item->payload ();
 }
 
+//zhi add
+template<class Policy>
+bool
+ContentStoreImpl<Policy>::IsFull()
+{
+  return GetSize () >= GetMaxSize ();
+}
 
 } // namespace cs
 } // namespace ndn

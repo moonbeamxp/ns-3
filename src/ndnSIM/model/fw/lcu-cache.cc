@@ -155,11 +155,6 @@ LCUCache::OnInterest (Ptr<Face> inFace,
   CacheInfo CacheInfoTag;
   interest->GetPayload ()->PeekPacketTag (CacheInfoTag);
   
-  //std::cout<<CacheIdTag.Get()<<"\t"<<CacheInfoTag.Get()<<"\n";
-  
-  //ConstCast<Packet> (interest->GetPayload ())->ReplacePacketTag (CacheIdTag);
-  //interest->SetWire (0); // clean the Wiredata
-  
   Ptr<Data> contentObject;
   contentObject = m_contentStore->Lookup (interest);
   if (contentObject != 0)
@@ -168,7 +163,6 @@ LCUCache::OnInterest (Ptr<Face> inFace,
       if (interest->GetPayload ()->PeekPacketTag (hopCountTag))
         {
           contentObject->GetPayload ()->AddPacketTag (hopCountTag);
-
         }
       // add the Cache ID Tag to the data from Content Store to indicate the cache place
       contentObject->GetPayload ()->AddPacketTag (CacheIdTag);
@@ -186,7 +180,7 @@ LCUCache::OnInterest (Ptr<Face> inFace,
       {
         pstEntry->SetIncoming(pstEntry->GetIncoming()-CacheInfoTag.Get());
         
-        if(pstEntry->GetIncoming() < m_pst->GetThresholdValue ())
+        if(pstEntry->GetIncoming() < 0.1*m_pst->GetThresholdValue ())
         {
           m_contentStore->Remove (contentObject->GetName());
         }
@@ -213,7 +207,6 @@ LCUCache::OnInterest (Ptr<Face> inFace,
       DidForwardSimilarInterest (inFace, interest, pitEntry); // do nothing
     }
 
-
   pstEntry->OutgoingInc();
   
   /*
@@ -239,19 +232,19 @@ LCUCache::OnInterest (Ptr<Face> inFace,
       pstEntry->SetOutgoing(0);
     }
   }
-  else	// the downstream node has dicided to cache this chunk
+  else	// the downstream node has decided to cache this chunk
   {
+    /*
     if(pstEntry->GetIncoming()-CacheInfoTag.Get() < 0)
     {
-      std::cout<<pstEntry->GetPrefix()<<"\t"<<pstEntry->GetIncoming()<<"\t"<<CacheInfoTag.Get()<<"\t"<<pstEntry->GetIncoming()-CacheInfoTag.Get()<< GetObject<Node>()->GetId()<<"\n";
-    }
+      std::cout<<pstEntry->GetPrefix()<<"\t"<<pstEntry->GetIncoming()<<"\t"<<CacheInfoTag.Get()<<"\t"<<pstEntry->GetIncoming()-CacheInfoTag.Get()<<"\t"<<GetObject<Node>()->GetId()<<"\n";
+    }*/
     
     double proportion = CacheInfoTag.Get()/pstEntry->GetIncoming();
     double outgoing = pstEntry->GetOutgoing();
     
-    //if(proportion!=1) std::cout<<"Proportion="<<proportion<<"\t"<<pstEntry->GetPrefix()<<"\t"<<pstEntry->GetIncoming()<<"\t"<<CacheInfoTag.Get()<<"\t"<< GetObject<Node>()->GetId()<<"\n";
+    // if(proportion!=1) std::cout<<"Proportion="<<proportion<<"\t"<<pstEntry->GetPrefix()<<"\t"<<pstEntry->GetIncoming()<<"\t"<<CacheInfoTag.Get()<<"\t"<< GetObject<Node>()->GetId()<<"\n";
     
-    //pstEntry->SetIncoming(pstEntry->GetIncoming()-CacheInfoTag.Get());
     pstEntry->SetIncoming(std::max(pstEntry->GetIncoming()-CacheInfoTag.Get(),0.0));
     m_pst->Update(pstEntry);	// update the order of the PST Entry
     
@@ -261,8 +254,6 @@ LCUCache::OnInterest (Ptr<Face> inFace,
     
     pstEntry->SetOutgoing(outgoing*(1-proportion));
   }
-  
-
   PropagateInterest (inFace, interest, pitEntry, hops);
 }
 

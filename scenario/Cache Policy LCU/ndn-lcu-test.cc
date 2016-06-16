@@ -24,6 +24,20 @@
 #include "ns3/point-to-point-module.h"
 #include "ns3/ndnSIM-module.h"
 
+#define Strategy	"LCE"
+#define CS_Capacity	"40"
+#define Capacity	"50000"
+#define Alpha		"1.0"
+#define Rate		"200"
+
+#define suffix			Strategy"-"Capacity"-"CS_Capacity"-"Rate"-"Alpha".txt"
+#define aggregate_trace		"result/aggregate-trace-"suffix
+#define rate_trace		"result/rate-trace-"suffix
+#define cs_trace		"result/cs-trace-"suffix
+#define app_delays_trace	"result/app-delays-trace-"suffix
+#define drop_trace		"result/drop-trace-"suffix
+#define cs_index		"result/cs-index-"suffix
+
 using namespace ns3;
 
 /*void
@@ -163,7 +177,8 @@ main (int argc, char *argv[])
   consumerHelper.SetAttribute ("s", StringValue ("1"));
   // Consumer will request /prefix/0, /prefix/1, ...
   consumerHelper.SetPrefix ("/prefix");
-  consumerHelper.SetAttribute ("Frequency", StringValue ("10")); // 10 interests a second
+  consumerHelper.SetAttribute ("Frequency", StringValue ("200")); // 10 interests a second
+  consumerHelper.SetAttribute ("Randomize", StringValue ("exponential"));
   consumerHelper.Install (nodes.Get (0)); // first node
   consumerHelper.Install (nodes.Get (1)); // first node
   consumerHelper.Install (nodes.Get (3)); // first node
@@ -184,6 +199,8 @@ main (int argc, char *argv[])
   //Simulator::Schedule (Seconds (290), PeriodicStatsPrinter, nodes.Get (0), Seconds (3000));
   //Simulator::Schedule (Seconds (290), PeriodicStatsPrinter, nodes.Get (1), Seconds (3000));
   //Simulator::Schedule (Seconds (290), PeriodicStatsPrinter, nodes.Get (2), Seconds (3000));
+
+  Simulator::Schedule (Seconds (290), ndn::L3AggregateTracer::InstallAll, aggregate_trace, Seconds (1.0));
 
   Simulator::Stop (Seconds (300.0));
 
