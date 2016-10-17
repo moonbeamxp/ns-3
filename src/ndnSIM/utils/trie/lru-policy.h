@@ -80,6 +80,7 @@ struct lru_policy_traits
         if (max_size_ != 0 && policy_container::size () >= max_size_)
           {
             base_.erase (&(*policy_container::begin ()));
+            std::cout<<"replace"<<std::endl;
           }
       
         policy_container::push_back (*item);
@@ -99,7 +100,6 @@ struct lru_policy_traits
       erase (typename parent_trie::iterator item)
       {
         policy_container::erase (policy_container::s_iterator_to (*item));
-        std::cout<<"replace"<<std::endl;
       }
 
       inline void
