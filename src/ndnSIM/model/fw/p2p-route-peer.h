@@ -11,6 +11,8 @@
 #include "best-route.h"
 #include "ns3/log.h"
 
+#include <ns3/ndn-name.h>
+
 namespace ns3 {
 namespace ndn {
 namespace fw {
@@ -48,6 +50,10 @@ public:
   virtual void
   OnData (Ptr<Face> face,
           Ptr<Data> data);
+          
+  // Notify the upper Router of the expired cached contents
+  virtual void
+  ExpiredNotify (const Name& name);        
           
 protected:
   static LogComponent g_log;

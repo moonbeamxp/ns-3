@@ -72,8 +72,14 @@ Popcacherevise::Popcacherevise ()
 
 void
 Popcacherevise::OnInterest (Ptr<Face> inFace,
-                                Ptr<Interest> interest)
+                            Ptr<Interest> interest)
 {
+  if (interest->GetNack () > 0)
+    {
+      OnNack (inFace, interest);
+      return;
+    }  
+  
   NS_LOG_FUNCTION (inFace << interest->GetName ());
   m_inInterests (interest, inFace);
   
@@ -157,7 +163,7 @@ Popcacherevise::OnInterest (Ptr<Face> inFace,
 
 void
 Popcacherevise::OnData (Ptr<Face> inFace,
-                            Ptr<Data> data)
+                        Ptr<Data> data)
 {
   NS_LOG_FUNCTION (inFace << data->GetName ());
   m_inData (data, inFace);

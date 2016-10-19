@@ -71,6 +71,12 @@ void
 LcdStorage::OnInterest (Ptr<Face> inFace,
                         Ptr<Interest> interest)
 {
+  if (interest->GetNack () > 0)
+    {
+      OnNack (inFace, interest);
+      return;
+    }  
+  
   NS_LOG_FUNCTION (inFace << interest->GetName ());
   m_inInterests (interest, inFace);
 

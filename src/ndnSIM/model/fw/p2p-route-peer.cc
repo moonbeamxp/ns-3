@@ -72,6 +72,12 @@ void
 P2PRoutePeer::OnInterest (Ptr<Face> inFace,
                           Ptr<Interest> interest)
 {
+  if (interest->GetNack () > 0)
+    {
+      OnNack (inFace, interest);
+      return;
+    }  
+  
   uint32_t flag=inFace->GetFlags ();
   
   if(flag!=0)	//flag is positive integer means this face is a APPFace, the Interest packet is from this node itself, do normal operation
@@ -187,6 +193,12 @@ P2PRoutePeer::OnData (Ptr<Face> inFace, Ptr<Data> data)
       // Lookup another PIT entry
       pitEntry = m_pit->Lookup (*data);
     }
+}
+
+void
+P2PRoutePeer::ExpiredNotify (const Name& name)
+{
+  std::cout<<name<<"\n";
 }
 
 } // namespace fw
