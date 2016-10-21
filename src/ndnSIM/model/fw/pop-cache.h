@@ -42,11 +42,6 @@ public:
 
   // from super
   virtual void
-  OnInterest (Ptr<Face> face,
-              Ptr<Interest> interest);
-
-  // from super
-  virtual void
   OnData (Ptr<Face> face,
           Ptr<Data> data);
 

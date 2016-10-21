@@ -217,43 +217,32 @@ Popcachefrstat::OnData (Ptr<Face> inFace,
   
   ******** old method ********/
   
-  // caculate the cache probility
+  // caculate the cache probility, zhi add
+  
   BenefitTag Benefit;
-  int b;
   data->GetPayload ()->PeekPacketTag (Benefit);
   Benefit.Increment ();
-  b = Benefit.Get ();
+  uint32_t benefit = Benefit.Get ();
   // Update the benefit value
   ConstCast<Packet> (data->GetPayload ())->ReplacePacketTag (Benefit);
   data->SetWire (0); // clean the Wiredata
-
+  
+  DistanceTag Distance;
+  data->GetPayload ()->PeekPacketTag (Distance);
+  uint32_t distance = Distance.Get ();
+  
   // Get the Populcarity of chunk base on statistic
   Ptr<pst::Entry> pstEntry = m_pst->Lookup (*data);
-  int current,first;
-  double p;
-  if (pstEntry==0)
-  {
-    p=0;
-  }
-  else
-  {
-    current = pstEntry->GetIncoming();
-    first   = m_pst->GetCurrentFirst();
-    p=double(current)/double(first);
-  }
-
-  DistanceTag Distance;
-  int d;
-  data->GetPayload ()->PeekPacketTag (Distance);
-  d = Distance.Get ();
-
-  double prob=p*b/d;
+  double populcarity;
+  if (pstEntry==0)	populcarity = 0;
+  else			populcarity = pstEntry->GetIncoming() / m_pst->GetCurrentFirst();
   
-  // generate the random number
-  UniformVariable m_prob(0, 1); 
-  double p_prob = m_prob.GetValue();	
+  double probility = populcarity * benefit / distance;
+  
+  // Generate the random number
+  UniformVariable rand; 
 
-  //std::cout<<std::setprecision(2)<<p<<"\t"<<b<<"\t"<<d<<"\t"<<prob<<std::endl;
+  //std::cout<<std::setprecision(2)<<populcarity<<"\t"<<benefit<<"\t"<<distance<<"\t"<<probility<<std::endl;
 
   // Lookup PIT entry
 
@@ -265,7 +254,7 @@ Popcachefrstat::OnData (Ptr<Face> inFace,
       if (m_cacheUnsolicitedData || (m_cacheUnsolicitedDataFromApps && (inFace->GetFlags () & Face::APPLICATION)))
         {
           // Optimistically add or update entry in the content store
-          if(p_prob<=prob) cached = m_contentStore->Add (data);
+          if(rand.GetValue() < probility) cached = m_contentStore->Add (data);
         }
       else
         {
@@ -284,7 +273,7 @@ Popcachefrstat::OnData (Ptr<Face> inFace,
       bool cached = false;
 
       //Probability
-      if(p_prob<=prob) cached = m_contentStore->Add (data);
+      if(rand.GetValue() < probility) cached = m_contentStore->Add (data);
 
       DidReceiveSolicitedData (inFace, data, cached);
     }
