@@ -238,10 +238,9 @@ Popcachestat::OnData (Ptr<Face> inFace,
   uint32_t distance = Distance.Get () + benefit;
   
   // Get the Populcarity of chunk base on statistic
+  double populcarity = 0;
   Ptr<pst::Entry> pstEntry = m_pst->Lookup (*data);
-  double populcarity;
-  if (pstEntry==0)	populcarity = 0;
-  else			populcarity = pstEntry->GetIncoming() / m_pst->GetCurrentFirst();
+  if (pstEntry != 0)	populcarity = pstEntry->GetIncoming() / m_pst->GetCurrentFirst();
   
   double probility = populcarity * benefit / distance;
   
