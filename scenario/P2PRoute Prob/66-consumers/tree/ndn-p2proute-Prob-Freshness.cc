@@ -3,7 +3,7 @@
 #include "ns3/network-module.h"
 #include "ns3/ndnSIM-module.h"
 
-#define Strategy	"BestRoute-LCE"
+#define Strategy	"P2PRoute-Prob-Freshness"
 #define CS_Capacity	"40"
 #define Capacity	"50000"
 #define Alpha		"1.0"
@@ -90,22 +90,23 @@ main (int argc, char *argv[])
 				Names::Find<Node> ("R344"),   Names::Find<Node> ("R3411"),  Names::Find<Node> ("R3412"),
 				Names::Find<Node> ("R3413"),  Names::Find<Node> ("R3414"),  Names::Find<Node> ("R3421"),
 				Names::Find<Node> ("R3422"),  Names::Find<Node> ("R3423"),  Names::Find<Node> ("R3424") };
-				
+  
   // Install NDN stack on all nodes
   ndn::StackHelper ndnHelper;
   ndnHelper.SetDefaultRoutes (true);
-  ndnHelper.SetForwardingStrategy ("ns3::ndn::fw::BestRoute");
+  ndnHelper.SetForwardingStrategy ("ns3::ndn::fw::P2PRouteProbIndex");
   
   ndnHelper.SetContentStore ("ns3::ndn::cs::Nocache");  //producer node installs no cache
   ndnHelper.Install (producers[0]);  // install NDN stack to producer
   
-  ndnHelper.SetContentStore ("ns3::ndn::cs::Lru","MaxSize", CS_Capacity);  //routers install cache
+  ndnHelper.SetContentStore ("ns3::ndn::cs::Nocache");  //routers install no cache
   for(int i=0; i<=32; i++)
   {
     ndnHelper.Install (routers[i]);  //install NDN stack to routers
   }
   
-  ndnHelper.SetContentStore ("ns3::ndn::cs::Nocache");  //consumer nodes install no cache
+  ndnHelper.SetForwardingStrategy ("ns3::ndn::fw::P2PRoutePeer");
+  ndnHelper.SetContentStore ("ns3::ndn::cs::FreshnessFeedback::Lru","MaxSize", "0");  //consumer nodes install cache, cache size no limit
   for(int i=0; i<=65; i++)
   {
     ndnHelper.Install (consumers[i]);  // install NDN stack to consumers
@@ -119,13 +120,14 @@ main (int argc, char *argv[])
   // for producers
   ndn::AppHelper producerHelper ("ns3::ndn::Producer");
   producerHelper.SetAttribute ("PayloadSize", StringValue("1024"));
+  producerHelper.SetAttribute ("Freshness", TimeValue (Seconds (FreshTime)));
   producerHelper.SetPrefix ("/prefix");
   ndnGlobalRoutingHelper.AddOrigins ("/prefix", producers[0]);
   
   producerHelper.Install (producers[0]); // root node
   
   // for consumers
-  ndn::AppHelper consumerHelper ("ns3::ndn::ConsumerZipfMandelbrotUnique");
+  ndn::AppHelper consumerHelper ("ns3::ndn::ConsumerZipfMandelbrotUnique::ConsumerPeer");
   consumerHelper.SetAttribute ("NumberOfContents", StringValue (Capacity));
   consumerHelper.SetAttribute ("q", StringValue ("0"));
   consumerHelper.SetAttribute ("s", StringValue (Alpha));

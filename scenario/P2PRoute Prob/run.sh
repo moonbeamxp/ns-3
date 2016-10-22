@@ -9,7 +9,7 @@ echo Start!
 ./run2.sh
 
 # vary Rate
-./run3.sh
+#./run3.sh
 
 #./run4.sh
 

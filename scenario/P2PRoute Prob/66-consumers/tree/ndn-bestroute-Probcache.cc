@@ -3,7 +3,7 @@
 #include "ns3/network-module.h"
 #include "ns3/ndnSIM-module.h"
 
-#define Strategy	"BestRoute-LCE"
+#define Strategy	"BestRoute-Probcache"
 #define CS_Capacity	"40"
 #define Capacity	"50000"
 #define Alpha		"1.0"
@@ -94,7 +94,7 @@ main (int argc, char *argv[])
   // Install NDN stack on all nodes
   ndn::StackHelper ndnHelper;
   ndnHelper.SetDefaultRoutes (true);
-  ndnHelper.SetForwardingStrategy ("ns3::ndn::fw::BestRoute");
+  ndnHelper.SetForwardingStrategy ("ns3::ndn::fw::Probcache");
   
   ndnHelper.SetContentStore ("ns3::ndn::cs::Nocache");  //producer node installs no cache
   ndnHelper.Install (producers[0]);  // install NDN stack to producer
@@ -117,7 +117,7 @@ main (int argc, char *argv[])
   // Installing applications
 
   // for producers
-  ndn::AppHelper producerHelper ("ns3::ndn::Producer");
+  ndn::AppHelper producerHelper ("ns3::ndn::ProducerProbcache");
   producerHelper.SetAttribute ("PayloadSize", StringValue("1024"));
   producerHelper.SetPrefix ("/prefix");
   ndnGlobalRoutingHelper.AddOrigins ("/prefix", producers[0]);

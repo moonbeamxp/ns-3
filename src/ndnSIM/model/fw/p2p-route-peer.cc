@@ -198,7 +198,28 @@ P2PRoutePeer::OnData (Ptr<Face> inFace, Ptr<Data> data)
 void
 P2PRoutePeer::ExpiredNotify (const Name& name)
 {
-  std::cout<<name<<"\n";
+  NS_LOG_DEBUG ("Sending NACK_EXPIRED");
+  
+  // Create NACK packet with code 13 which means cached content expired
+  Ptr<Name> nack_name = Create<Name> (name);    
+  Ptr<Interest> nack = Create<Interest> ();
+  nack->SetName (nack_name);
+  nack->SetNack (13);  //NACK_EXPIRED code 13
+  
+  // Forward NACK through BestRoute
+  Ptr<fib::Entry> fibEntry = m_fib->LongestPrefixMatch (*nack);  
+  BOOST_FOREACH (const fib::FaceMetric &metricFace, fibEntry->m_faces.get<fib::i_metric> ())
+    {
+      NS_LOG_DEBUG ("Trying " << boost::cref(metricFace));
+      if (metricFace.GetStatus () == fib::FaceMetric::NDN_FIB_RED) // all non-read faces are in front
+        break;
+
+      if (!metricFace.GetFace ()->SendInterest (nack))
+        {
+          continue;
+        }
+      break; // do only once
+    }
 }
 
 } // namespace fw

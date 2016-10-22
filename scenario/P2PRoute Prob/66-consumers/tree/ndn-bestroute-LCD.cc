@@ -8,6 +8,7 @@
 #define Capacity	"50000"
 #define Alpha		"1.0"
 #define Rate		"200"
+#define FreshTime	4.0
 
 #define suffix			Strategy"-"Capacity"-"CS_Capacity"-"Rate"-"Alpha".txt"
 #define aggregate_trace		"result/aggregate-trace-"suffix
@@ -140,18 +141,18 @@ main (int argc, char *argv[])
   ndnGlobalRoutingHelper.CalculateRoutes ();
   
   // tracers
-  ndn::L3AggregateTracer::InstallAll (aggregate_trace, Seconds (1.0));
-  ndn::L3RateTracer::InstallAll (rate_trace, Seconds (1.0));
-  ndn::CsTracer::InstallAll (cs_trace, Seconds (1));
-  ndn::AppDelayTracer::InstallAll (app_delays_trace);
-  L2RateTracer::InstallAll (drop_trace, Seconds (1.0));
+  Simulator::Schedule (Seconds (60), ndn::L3AggregateTracer::InstallAll, aggregate_trace, Seconds (1.0));
+  Simulator::Schedule (Seconds (60), ndn::L3RateTracer::InstallAll, rate_trace, Seconds (1.0));
+  Simulator::Schedule (Seconds (60), ndn::CsTracer::InstallAll, cs_trace, Seconds (1));
+  Simulator::Schedule (Seconds (60), ndn::AppDelayTracer::InstallAll, app_delays_trace);
+  Simulator::Schedule (Seconds (60), L2RateTracer::InstallAll, drop_trace, Seconds (1.0));
   
   /*for (NodeList::Iterator i = NodeList::Begin (); i != NodeList::End (); ++i)
   {
-    Simulator::Schedule (Seconds (50), PeriodicStatsPrinter, *i, Seconds (30));
+    Simulator::Schedule (Seconds (170), PeriodicStatsPrinter, *i, Seconds (30));
   }*/
   
-  Simulator::Stop (Seconds (120.0));
+  Simulator::Stop (Seconds (180.0));
   Simulator::Run ();
   Simulator::Destroy ();
 

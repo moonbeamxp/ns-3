@@ -1,7 +1,7 @@
 /*
  * p2p-route-prob-index.h
  *
- *  Created on: 2016年1月15日
+ *  Created on: 2016年10月21日
  *      Author: zhi
  */
 
@@ -58,7 +58,19 @@ public:
   virtual void
   WillEraseTimedOutPendingInterest (Ptr<pit::Entry> pitEntry);
  
-protected:                           
+protected:
+  // from super
+  virtual void
+  PropagateInterest (Ptr<Face> inFace,
+                     Ptr<const Interest> interest,
+                     Ptr<pit::Entry> pitEntry,
+                     uint32_t hops);
+                     
+  // from super
+  virtual void
+  OnNack (Ptr<Face> inFace,
+          Ptr<Interest> nack);
+  
   virtual void
   ReturnInvalidData (Ptr<Face> inFace, 
                      Ptr<const Interest> interest, 

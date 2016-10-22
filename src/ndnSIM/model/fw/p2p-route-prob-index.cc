@@ -1,7 +1,7 @@
 /*
  * p2p-route-prob-index.cc
  *
- *  Created on: 2016年1月15日
+ *  Created on: 2016年10月21日
  *      Author: zhi
  */
 
@@ -118,6 +118,12 @@ P2PRouteProbIndex::OnInterest (Ptr<Face> inFace,
   NS_LOG_FUNCTION (inFace << interest->GetName ());
   m_inInterests (interest, inFace);
 
+  // record the hops of interest passed
+  FwHopCountTag hopCountTag;
+  uint32_t hops;
+  interest->GetPayload ()->PeekPacketTag (hopCountTag);
+  hops = hopCountTag.Get();
+  
   // Update the Incoming Interest Packet Counts information, zhi add
   if(!UpdatePstInformation (interest))
   {
@@ -164,7 +170,7 @@ P2PRouteProbIndex::OnInterest (Ptr<Face> inFace,
           contentObject->GetPayload ()->AddPacketTag (hopCountTag);
         }
 
-      pitEntry->AddIncoming (inFace/*, Seconds (1.0)*/);
+      pitEntry->AddIncoming (inFace, hops/*, Seconds (1.0)*/); // add the hops para
 
       // Do data plane performance measurements
       WillSatisfyPendingInterest (0, pitEntry);
@@ -176,7 +182,7 @@ P2PRouteProbIndex::OnInterest (Ptr<Face> inFace,
 
   if (similarInterest && ShouldSuppressIncomingInterest (inFace, interest, pitEntry))
     {
-      pitEntry->AddIncoming (inFace/*, interest->GetInterestLifetime ()*/);
+      pitEntry->AddIncoming (inFace, hops/*, interest->GetInterestLifetime ()*/);
       // update PIT entry lifetime
       pitEntry->UpdateLifetime (interest->GetInterestLifetime ());
 
@@ -193,7 +199,7 @@ P2PRouteProbIndex::OnInterest (Ptr<Face> inFace,
       DidForwardSimilarInterest (inFace, interest, pitEntry);
     }
 
-  PropagateInterest (inFace, interest, pitEntry); //add the hops para
+  PropagateInterest (inFace, interest, pitEntry, hops); //add the hops para
 }
 
 void
@@ -224,16 +230,7 @@ P2PRouteProbIndex::OnData (Ptr<Face> inFace, Ptr<Data> data)
           NS_LOG_DEBUG ("Recieve Invalid DATA for "<<data->GetName()<<", Modify FIB Entry");
         }
     }
-  else
-    {
-      // Update the ls value
-      BenefitTag Length_Server;
-      data->GetPayload ()->PeekPacketTag (Length_Server);
-      Length_Server.Increment ();
-      ConstCast<Packet> (data->GetPayload ())->ReplacePacketTag (Length_Server);
-      data->SetWire (0); // clean the Wiredata
-    }
-    
+   
   // Lookup PIT entry
   Ptr<pit::Entry> pitEntry = m_pit->Lookup (*data);
   if (pitEntry == 0)
@@ -288,6 +285,33 @@ P2PRouteProbIndex::OnData (Ptr<Face> inFace, Ptr<Data> data)
     }
 }
 
+// handle Content Expire Event
+void
+P2PRouteProbIndex::OnNack (Ptr<Face> inFace,
+                           Ptr<Interest> nack)
+{
+  if(nack->GetNack () != 13)
+    {
+      super::OnNack(inFace, nack);
+      return;
+    }
+
+  // NS_LOG_FUNCTION (inFace << nack->GetName ());
+  m_inNacks (nack, inFace);
+  
+  // Response to the EXPIRED NACK, delete the expired trace
+  Ptr<fib::Entry> fibEntry = m_fib->Find (nack->GetName ());
+  if (fibEntry != 0)
+  {
+    fibEntry->RemoveFace (inFace);
+    if((*fibEntry).m_faces.size () == 0)
+      {
+        m_fib->Remove (&fibEntry->GetPrefix ());
+      }
+    NS_LOG_DEBUG ("Recieve EXPIRED NACK for "<<nack->GetName()<<", Update FIB Entry");
+  }
+}
+
 void
 P2PRouteProbIndex::WillEraseTimedOutPendingInterest (Ptr<pit::Entry> pitEntry)
 {
@@ -307,8 +331,53 @@ P2PRouteProbIndex::WillEraseTimedOutPendingInterest (Ptr<pit::Entry> pitEntry)
             }
           NS_LOG_DEBUG ("Due to PIT Entry Timeout, modify FIB Entry");
         }
-  // m_fib->Remove (&pitEntry->GetPrefix ());  old method : delete the Entry directly, only consider the prefix, zhi add
+  //m_fib->Remove (&pitEntry->GetPrefix ());  //old method : delete the Entry directly, only consider the prefix, zhi add
   super::WillEraseTimedOutPendingInterest (pitEntry);
+}
+
+void
+P2PRouteProbIndex::PropagateInterest (Ptr<Face> inFace,
+                                      Ptr<const Interest> interest,
+                                      Ptr<pit::Entry> pitEntry,
+                                      uint32_t hops)
+{
+  bool isRetransmitted = m_detectRetransmissions && // a small guard
+                         DetectRetransmittedInterest (inFace, interest, pitEntry);
+
+  pitEntry->AddIncoming (inFace, hops/*, interest->GetInterestLifetime ()*/);
+  /// @todo Make lifetime per incoming interface
+  pitEntry->UpdateLifetime (interest->GetInterestLifetime ());
+
+  bool propagated = DoPropagateInterest (inFace, interest, pitEntry);
+
+  if (!propagated && isRetransmitted) //give another chance if retransmitted
+    {
+      // increase max number of allowed retransmissions
+      pitEntry->IncreaseAllowedRetxCount ();
+
+      // try again
+      propagated = DoPropagateInterest (inFace, interest, pitEntry);
+    }
+
+  // if (!propagated)
+  //   {
+  //     NS_LOG_DEBUG ("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+  //     NS_LOG_DEBUG ("+++ Not propagated ["<< interest->GetName () <<"], but number of outgoing faces: " << pitEntry->GetOutgoing ().size ());
+  //     NS_LOG_DEBUG ("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+  //   }
+
+  // ForwardingStrategy will try its best to forward packet to at least one interface.
+  // If no interests was propagated, then there is not other option for forwarding or
+  // ForwardingStrategy failed to find it.
+  if (!propagated)
+    {
+      ReturnInvalidData(inFace, interest, pitEntry);
+    }
+    
+  /*if (!propagated && pitEntry->AreAllOutgoingInVain ())
+    {
+      DidExhaustForwardingOptions (inFace, interest, pitEntry);
+    }*/
 }
 
 void
@@ -357,60 +426,50 @@ P2PRouteProbIndex::SatisfyPendingInterest (Ptr<Face> inFace,
   if (inFace != 0)
     pitEntry->RemoveIncoming (inFace);
 
-  // get ls
-  BenefitTag Length_Server;
-  data->GetPayload ()->PeekPacketTag (Length_Server);
-  int ls = Length_Server.Get ();
+  BenefitTag Hops_Server;
+  data->GetPayload ()->PeekPacketTag (Hops_Server);
+  int hops_server = Hops_Server.Get ();
   
-  // get p
+  double populcarity = 0;
   Ptr<pst::Entry> pstEntry = m_pst->Lookup (*data);
-  int current,first;
-  double p;
-  if (pstEntry==0)
-  {
-    p=0;
-  }
-  else
-  {
-    current = pstEntry->GetIncoming();
-    first   = m_pst->GetCurrentFirst();
-    p=double(current)/double(first);
-  }
-  
+  if (pstEntry != 0)	populcarity = pstEntry->GetIncoming() / m_pst->GetCurrentFirst();
+   
   //satisfy all pending incoming Interests
   BOOST_FOREACH (const pit::IncomingFace &incoming, pitEntry->GetIncoming ())
     {
-      bool ok = incoming.m_face->SendData (data);
-
-      DidSendOutData (inFace, incoming.m_face, data, pitEntry);
-      
-      // get lc
-      int lc = incoming.m_hops;
+      int hops_client = incoming.m_hops;
       
       // caculate the probility of tracing
-      double prob = 0;
+      double probility = 0;
+      if(hops_server == -1)	probility = 1;
+      else if(hops_server != 0)	probility = populcarity*(hops_server-hops_client)/hops_server;
       
-      if(ls) prob = p*(ls-lc)/ls;
+      //std::cout<<std::setprecision(2)<<GetObject<Node>()->GetId()<<"\t"<<populcarity<<"\t"<<hops_server<<"\t"<<hops_client<<"\t"<<probility<<std::endl;   
       
       //generate the random number
-      UniformVariable m_prob(0, 1); 
-      double ramdom = m_prob.GetValue();
-      
-      //std::cout<<std::setprecision(2)<<p<<"\t"<<ls<<"\t"<<lc<<"\t"<<prob<<std::endl;
-      
+      UniformVariable rand; 
+          
       // Add the reverse route path acorrding to the client request
-    
-      if(ramdom<=prob)	//if the hops from client is no more than Index_Range, then add the index route
+      if(rand.GetValue() < probility)	//if the hops from client is no more than Index_Range, then add the index route
         {
           Ptr<fib::Entry> entry = m_fib->Add (data->GetName(),incoming.m_face,incoming.m_hops); //incoming.m_hops is the cost
           NS_LOG_DEBUG ("Recieve Normal DATA for "<<data->GetName()<<", Add the FIB Entry to " << *incoming.m_face);
-        }  
+          //std::cout<<GetObject<Node>()->GetId()<<"\t"<<std::endl;   
+          Hops_Server.Set(-1);	//the downstream node must add the index in order to keep consistency
+        }
+      else
+        {
+          Hops_Server.Set(hops_server+1);
+        }
 
       //entry->SetRealDelayToProducer (incoming.m_face, 10);
-      //end
-                        
+      
+      ConstCast<Packet> (data->GetPayload ())->ReplacePacketTag (Hops_Server);
+      data->SetWire (0); // clean the Wiredata
+      
+      bool ok = incoming.m_face->SendData (data);
+      DidSendOutData (inFace, incoming.m_face, data, pitEntry);                 
       NS_LOG_DEBUG ("Satisfy " << *incoming.m_face);
-
       if (!ok)
         {
           m_dropData (data, incoming.m_face);

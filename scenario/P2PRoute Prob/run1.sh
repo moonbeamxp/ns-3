@@ -28,6 +28,7 @@
 # Run P2PRoute Stratagy
 
 ./cs.sh 400
+./freshtime.sh 4.0
 
 ./alpha.sh 0.7
 ./p2proute.sh
