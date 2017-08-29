@@ -175,7 +175,7 @@ ConsumerZipfMandelbrotwithPop::SendPacket() {
       while(m_seqTimeouts.find (seq) != m_seqTimeouts.end ())
         {
           NS_LOG_DEBUG("> The interest of Seq "<<seq<<" already exists. Call GetNextSeq()");
-          seq = ConsumerZipfMandelbrotUnique::GetNextSeq();
+          seq = ConsumerZipfMandelbrotwithPop::GetNextSeq();
         }
       m_seq ++;
     }
