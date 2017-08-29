@@ -170,8 +170,13 @@ ConsumerZipfMandelbrotwithPop::SendPacket() {
               return; // we are totally done
             }
         }
-
       seq = ConsumerZipfMandelbrotwithPop::GetNextSeq();
+      //Discard the request which is in processing
+      while(m_seqTimeouts.find (seq) != m_seqTimeouts.end ())
+        {
+          NS_LOG_DEBUG("> The interest of Seq "<<seq<<" already exists. Call GetNextSeq()");
+          seq = ConsumerZipfMandelbrotUnique::GetNextSeq();
+        }
       m_seq ++;
     }
 
@@ -203,11 +208,11 @@ ConsumerZipfMandelbrotwithPop::SendPacket() {
   FwHopCountTag hopCountTag;
   interest->GetPayload ()->AddPacketTag (hopCountTag);
 
-//add the Popularity tag to the Interest package
+  //add the Popularity tag to the Interest package
   PopularityTag popularity;
   popularity.Set((m_Pcum[seq]-m_Pcum[seq-1])/m_Pcum[1]);
   interest->GetPayload ()->AddPacketTag (popularity);
-//end
+  //end
 
   m_transmittedInterests (interest, this, m_face);
   m_face->ReceiveInterest (interest);
