@@ -7,37 +7,35 @@
 
 #include "prob-cache.h"
 
-#include "best-route.h"
 #include "ns3/ndn-interest.h"
+#include "ns3/ndn-data.h"
 #include "ns3/ndn-pit.h"
 #include "ns3/ndn-pit-entry.h"
-#include "ns3/ndn-data.h"
 #include "ns3/ndn-content-store.h"
-#include "ns3/ndn-face.h"
-
-#include "ns3/assert.h"
-#include "ns3/log.h"
-#include "ns3/ptr.h"
-#include "ns3/simulator.h"
-#include "ns3/boolean.h"
-#include "ns3/string.h"
-
-#include <boost/ref.hpp>
-#include <boost/foreach.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/bind.hpp>
-#include <boost/tuple/tuple.hpp>
 
 #include "ns3/ndnSIM/utils/ndn-fw-hop-count-tag.h"
 #include "ns3/ndnSIM/utils/ndn-fw-TSI-tag.h"
 #include "ns3/ndnSIM/utils/ndn-fw-TSB-tag.h"
+
+#include "ns3/assert.h"
+#include "ns3/log.h"
+#include "ns3/ptr.h"
+//#include "ns3/simulator.h"
+//#include "ns3/boolean.h"
+//#include "ns3/string.h"
+
+//#include <boost/ref.hpp>
+//#include <boost/foreach.hpp>
+//#include <boost/lambda/lambda.hpp>
+//#include <boost/lambda/bind.hpp>
+//#include <boost/tuple/tuple.hpp>
 
 #include "ns3/random-variable.h"
 
 //#include <iostream>
 //#include <iomanip>
 
-namespace ll = boost::lambda;
+//namespace ll = boost::lambda;
 
 namespace ns3 {
 namespace ndn {
