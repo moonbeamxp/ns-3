@@ -1,11 +1,11 @@
 /*
- * prob-cache-plus.cc
+ * prob-cache-revise.cc
  *
- *  Created on: 2017年9月14日
+ *  Created on: 2017年9月13日
  *      Author: zhi
  */
 
-#include "prob-cache-plus.h"
+#include "prob-cache-revise.h"
 
 #include "ns3/ndn-interest.h"
 #include "ns3/ndn-data.h"
@@ -41,40 +41,41 @@ namespace ns3 {
 namespace ndn {
 namespace fw {
 
-NS_OBJECT_ENSURE_REGISTERED (Probcacheplus);
+NS_OBJECT_ENSURE_REGISTERED (Probcacherevise);
 
-LogComponent Probcacheplus::g_log = LogComponent (Probcacheplus::GetLogName ().c_str ());
+LogComponent Probcacherevise::g_log = LogComponent (Probcacherevise::GetLogName ().c_str ());
 
 std::string
-Probcacheplus::GetLogName ()
+Probcacherevise::GetLogName ()
 {
-  return super::GetLogName ()+".Probcacheplus";
+  return super::GetLogName ()+".Probcacherevise";
 }
 
 
 TypeId
-Probcacheplus::GetTypeId (void)
+Probcacherevise::GetTypeId (void)
 {
-  static TypeId tid = TypeId ("ns3::ndn::fw::Probcacheplus")
+  static TypeId tid = TypeId ("ns3::ndn::fw::Probcacherevise")
     .SetGroupName ("Ndn")
     .SetParent <super> ()
-    .AddConstructor <Probcacheplus> ()
+    .AddConstructor <Probcacherevise> ()
     ;
   return tid;
 }
 
-Probcacheplus::Probcacheplus ()
+Probcacherevise::Probcacherevise ()
 {
 }
 
 void
-Probcacheplus::OnData (Ptr<Face> inFace,
-                   Ptr<Data> data)
+Probcacherevise::OnData (Ptr<Face> inFace,
+                         Ptr<Data> data)
 {
   NS_LOG_FUNCTION (inFace << data->GetName ());
   m_inData (data, inFace);
 
-  // new method to caculate the cache probility of Probcacheplus
+  // caculate the cache probility of Probcacherevise
+
   BenefitTag TSBTag;
   double x;
   data->GetPayload ()->PeekPacketTag (TSBTag);
@@ -89,8 +90,7 @@ Probcacheplus::OnData (Ptr<Face> inFace,
   data->GetPayload ()->PeekPacketTag (TSITag);
   c = TSITag.Get () + x;
   
-  double tmp=pow(x/c,c);
-  double prob=(c-x+1)*tmp/10;
+  double prob=(c-x+1)*x/10/c;
   
   // generate the random number
   UniformVariable m_prob(0, 1); 
@@ -131,7 +131,7 @@ Probcacheplus::OnData (Ptr<Face> inFace,
 
       DidReceiveSolicitedData (inFace, data, cached);
     }
-  
+ 
   while (pitEntry != 0)
     {
       // Do data plane performance measurements

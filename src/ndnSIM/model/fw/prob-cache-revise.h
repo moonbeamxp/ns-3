@@ -1,12 +1,12 @@
 /*
- * prob-cache-plus.h
+ * prob-cache-revise.h
  *
- *  Created on: 2017年9月14日
+ *  Created on: 2017年9月13日
  *      Author: zhi
  */
 
-#ifndef PROB_CACHE_PLUS_H_
-#define PROB_CACHE_PLUS_H_
+#ifndef PROB_CACHE_REVISE_H_
+#define PROB_CACHE_REVISE_H_
 
 #include "pop-cache-revise.h"
 #include "ns3/log.h"
@@ -19,7 +19,7 @@ namespace fw {
  * \ingroup ndn
  * \brief Best route strategy
  */
-class Probcacheplus :
+class Probcacherevise :
     public Popcacherevise
 {
 private:
@@ -38,7 +38,7 @@ public:
   /**
    * @brief Default constructor
    */
-  Probcacheplus ();
+  Probcacherevise ();
 
   // from super
   virtual void
@@ -54,5 +54,5 @@ protected:
 } // namespace ns3
 
 
-#endif /* PROB_CACHE_PLUS_H_ */
+#endif /* PROB_CACHE_REVISE_H_ */
 
