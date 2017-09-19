@@ -37,7 +37,7 @@
 #include <boost/ref.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/bind.hpp>
-#include <iostream>
+//#include <iostream>
 namespace ll = boost::lambda;
 
 NS_LOG_COMPONENT_DEFINE ("ndn.ProducerLCD");
